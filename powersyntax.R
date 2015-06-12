@@ -103,3 +103,18 @@
 # kneweachother.hp: subjects knew each other from outside the lab
 # minorproblem.hp: potential problems, but probably fine
 # language.hp: subject is a non-native English speaker
+
+
+
+##### 2. Import Data, Load Packages, Load Functions #####
+
+pow <- read.csv('buswideform.csv')
+
+source('../R functions/mean-plot.R')
+source('../R functions/multiplot.R')
+
+## exclusions
+# hp exclusions: 4 to 93
+# lp exclusions: 94 to 183
+pow[pow$inattention.hp!=0 | pow$suspicion.hp!=0 | pow$misunderstood.hp!=0 | pow$kneweachother.hp!=0 | pow$language.hp!=0, 4:93] <- NA
+pow[pow$inattention.lp!=0 | pow$suspicion.lp!=0 | pow$misunderstood.lp!=0 | pow$kneweachother.lp!=0 | pow$language.lp!=0, 94:183] <- NA
