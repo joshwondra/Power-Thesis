@@ -206,7 +206,7 @@ pow$angermean.lp <- rowMeans(pow[,c('angry.lp', 'mad.lp')])
 pow$sadmean.lp <- rowMeans(pow[,c('sad.lp', 'down.lp')])
 pow$sympmean.lp <- rowMeans(pow[,c('symp.lp', 'compass.lp')])
 
-meanplot.data <- data.frame(powcond=factor(rep(c(1,-1), each=length(pow$dyadID)), levels=c(-1,1), labels=c('low power','high power')), emot.cond=factor(pow$emot_cond, levels=c(1,2), labels=c('sadness','anger')), anger=c(pow$angermean.hp, pow$angermean.lp), sadness=c(pow$sadmean.hp, pow$sadmean.lp), sympathy=c(pow$sympmean.hp, pow$sympmean.lp), angry=c(pow$angry.hp, pow$angry.lp), mad=c(pow$mad.hp, pow$mad.lp), sad=c(pow$sad.hp, pow$sad.lp), down=c(pow$down.hp, pow$down.lp), symp=c(pow$symp.hp, pow$symp.lp), comp=c(pow$compass.hp, pow$compass.lp))
+meanplot.data <- data.frame(powcond=factor(rep(c(1,-1), each=length(pow$dyadID)), levels=c(-1,1), labels=c('low power','high power')), emot.cond=factor(pow$emot_cond), anger=c(pow$angermean.hp, pow$angermean.lp), sadness=c(pow$sadmean.hp, pow$sadmean.lp), sympathy=c(pow$sympmean.hp, pow$sympmean.lp), angry=c(pow$angry.hp, pow$angry.lp), mad=c(pow$mad.hp, pow$mad.lp), sad=c(pow$sad.hp, pow$sad.lp), down=c(pow$down.hp, pow$down.lp), symp=c(pow$symp.hp, pow$symp.lp), comp=c(pow$compass.hp, pow$compass.lp))
 
 #correctly scale responses
 meanplot.data$anger <- meanplot.data$anger-1 
@@ -303,7 +303,7 @@ if(is.na(pow$minorproblem.hp)==FALSE){pow[pow$minorproblem.hp==1, 4:93] <- NA}
 pow[pow$minorproblem.lp==1, 94:183] <- NA
 
 #sadness
-with(meanplot.data, mean.plot(sadness, emot.cond, powcond, ylab='Sadness', ylim=c(0,4))) + xlab("Target's Emotion") + guides(fill=guide_legend(title='Power Condition'))
+with(meanplot.data, mean.plot(sadness, emot.cond, powcond, ylab='Sadness', ylim=c(0,4))) + xlab("Other's Emotion") + guides(fill=guide_legend(title='Power Condition'))
 pow$sad.sum <- with(pow, sadmean.hp+sadmean.lp)
 pow$sad.diff <- with(pow, sadmean.hp-sadmean.lp)
 m.sad.sum <- lm(sad.sum ~ angerdummy, data=pow)
@@ -330,16 +330,23 @@ summary(lm(sadmean.lp ~ dadedcent.lp*emocent, data=pow))
 
 
 
-with(meanplot.data, mean.plot(anger, emot.cond, powcond, ylab='Anger', ylim=c(0,4))) + xlab("Target's Emotion") + guides(fill=guide_legend(title='Power Condition'))
+with(meanplot.data, mean.plot(anger, emot.cond, powcond, ylab='Anger', ylim=c(0,4))) + xlab("Other's Emotion") + guides(fill=guide_legend(title='Power Condition'))
 pow$anger.sum <- with(pow, angermean.hp+angermean.lp)
 pow$anger.diff <- with(pow, angermean.hp-angermean.lp)
 m.anger.sum <- lm(anger.sum ~ angerdummy, data=pow)
 summary(m.anger.sum);confint(m.anger.sum)
 
-
-
 with(meanplot.data, mean.plot(sympathy, emot.cond, powcond, ylab='Sympathy', ylim=c(0,4))) + xlab("Target's Emotion") + guides(fill=guide_legend(title='Power Condition'))
 
+with(meanapp.data, mean.plot(blamevic, emot.cond, powcond, ylab='Blame Victim', ylim=c(0,4))) + xlab("Target's Emotion") + guides(fill=guide_legend(title='Power Condition'))
+
+with(meanapp.data, mean.plot(blamesit, emot.cond, powcond, ylab='Blame Situation', ylim=c(0,4))) + xlab("Target's Emotion") + guides(fill=guide_legend(title='Power Condition'))
+
+with(meanapp.data, mean.plot(blameoth, emot.cond, powcond, ylab='Blame Other', ylim=c(0,4))) + xlab("Target's Emotion") + guides(fill=guide_legend(title='Power Condition'))
+
+with(meanapp.data, mean.plot(pleas, emot.cond, powcond, ylab='Blame Other', ylim=c(0,4))) + xlab("Target's Emotion") + guides(fill=guide_legend(title='Power Condition'))
+
+with(meanapp.data, mean.plot(immoral, emot.cond, powcond, ylab='Blame Other', ylim=c(0,4))) + xlab("Target's Emotion") + guides(fill=guide_legend(title='Power Condition'))
 
 powmlm <- read.csv('bus.csv', header=TRUE)
 powmlm <- powmlm[powmlm$noshow==0 & powmlm$inattention==0 & powmlm$suspicion==0 & powmlm$misunderstood==0 & powmlm$kneweachother==0 & powmlm$language==0,]
@@ -353,6 +360,13 @@ powmlm$angermean <- rowMeans(data.frame(powmlm$angry, powmlm$mad))
 powmlm$sadmean <- rowMeans(data.frame(powmlm$sad, powmlm$down))
 powmlm$sympmean <- rowMeans(data.frame(powmlm$symp, powmlm$compass))
 
+## create contrasts
+hp lp
+sadd angry
+powmlm$angry.cont <- with(powmlm, ifelse(emot_cond==1, -1, ifelse(emot_cond==2, 1, NA)))
+powmlm$hp.angry <- with(powmlm, ifelse(emot_cond==2 & pt_cond==1, 1, ifelse(emot_cond==2 & pt_cond==2, -1, 0)))
+powmlm$hp.sad <- with(powmlm, ifelse(emot_cond==1 & pt_cond==1, 1, ifelse(emot_cond==1 & pt_cond==2, -1, 0)))
+
 powmlm$emot.cent <- (powmlm$emot_cond-1.5)*2
 powmlm$pow.cent <- (powmlm$pt_cond-1.5)*2
 powmlm$ssc.cent <- with(powmlm, ssc-mean(ssc, na.rm=TRUE))
@@ -360,4 +374,42 @@ powmlm$ssc.cent <- with(powmlm, ssc-mean(ssc, na.rm=TRUE))
 m1 <- lmer(sadmean ~ emot.cent*pow.cent + (1 | dyadID), data=powmlm)
 display(m1)
 coef(m1)
-confint(m1, method='boot', nsim=10000)
+confint.merMod(m1, method='boot', nsim=5000)
+
+m2 <- lmer(angermean ~ emot.cent*pow.cent + (1 | dyadID), data=powmlm)
+display(m2)
+coef(m2)
+confint.merMod(m2, method='boot', nsim=5000)
+
+powmlm$blamevic <- rowMeans(powmlm[,c('targag','targpow')])
+powmlm$blameoth <- rowMeans(powmlm[,c('othag','othpow')])
+powmlm$blamesit <- rowMeans(powmlm[,c('selfcirc','noonepow','sitcont')])
+
+m3 <- lmer(blamevic ~ emot.cent*pow.cent + (1 | dyadID), data=powmlm)
+display(m3)
+coef(m3)
+confint.merMod(m3, method='boot', nsim=5000)
+
+m5 <- lmer(blamevic ~ angry.cont + hp.sad + hp.angry + (1 | dyadID), data=powmlm)
+display(m3)
+coef(m3)
+confint.merMod(m5, method='boot', nsim=5000)
+
+m4 <- lmer(blamesit ~ emot.cent*pow.cent + (1 | dyadID), data=powmlm)
+display(m4)
+coef(m4)
+confint.merMod(m4, method='boot', nsim=5000)
+
+m6 <- lmer(blamesit ~ angry.cont + hp.sad + hp.angry + (1 | dyadID), data=powmlm)
+display(m6)
+coef(m6)
+confint.merMod(m6, method='boot', nsim=5000)
+
+
+m7 <- lmer(sadmean ~ angry.cont + hp.sad + hp.angry + (1 | dyadID), data=powmlm)
+display(m6)
+coef(m6)
+confint.merMod(m7, method='boot', nsim=5000)
+
+m8 <- lmer(angermean ~ angry.cont + hp.sad + hp.angry + (1 | dyadID), data=powmlm)
+confint.merMod(m8, method='boot', nsim=5000)
