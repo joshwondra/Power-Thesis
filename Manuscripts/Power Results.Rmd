@@ -1,0 +1,26 @@
+---
+output: pdf_document
+---
+\documentclass[man,a4paper,noextraspace,apacite]{apa6}
+\usepackage{apacite}
+\title{Results of Power Studies}
+\shorttitle{Power and Empathy}
+\author{Joshua D. Wondra and Phoebe C. Ellsworth}
+\affiliation{University of Michigan}
+
+\abstract{}
+\keywords{empathy, vicarious emotions, perspective taking}
+
+\authornote{Joshua D. Wondra, Department of Psychology, University of Michigan.
+
+Phoebe C. Ellsworth, Department of Psychology, University of Michigan.
+
+Correspondence concerning this article should be addressed to Josh Wondra, Department of Psychology, University of Michigan, 530 Church St., Ann Arbor, MI 48109-1043.
+
+Contact: jdwondra@umich.edu}
+
+\begin{document}
+
+\maketitle
+
+\section{Thesis Study}

@@ -1,0 +1,167 @@
+\documentclass[man,apacite,floatsintext]{apa6}
+\usepackage{apacite}
+\usepackage{float}
+\title{Results of Power Experiments}
+\shorttitle{Power and Empathy}
+\author{Joshua D. Wondra and Phoebe C. Ellsworth}
+\affiliation{University of Michigan}
+
+\abstract{Abstract TBD}
+\keywords{empathy, vicarious emotions, power}
+
+\authornote{Joshua D. Wondra, Department of Psychology, University of Michigan.
+
+Phoebe C. Ellsworth, Department of Psychology, University of Michigan.
+
+Correspondence concerning this article should be addressed to Josh Wondra, Department of Psychology, University of Michigan, 530 Church St., Ann Arbor, MI 48109-1043.
+
+Contact: jdwondra@umich.edu}
+
+\begin{document}
+\SweaveOpts{concordance=TRUE}
+\maketitle
+
+\section{Thesis Study}
+\subsection{Open-Ended Emotions}
+<<ThesisData, echo=FALSE>>=
+load('../powopenlong.RData')
+load('../powcloselong.RData')
+powopen.long$emocond <- (powopen.long$emocond-1.5)*2
+powopen.long$powcond <- (powopen.long$powcond-1.5)*2
+library(lme4)
+
+## Plot proportions
+
+source('../../R functions/proportion-plot.R')
+open.angry <- with(powopen.long[is.na(powopen.long$emofac)==FALSE,], prop.plot(angry, emofac, powfac, ylab='Anger', xlab="Target's Emotion", leglab="Power Condition"))
+open.sad <- with(powopen.long[is.na(powopen.long$emofac)==FALSE,], prop.plot(sad, emofac, powfac, ylab='Sadness', xlab="Target's Emotion", leglab="Power Condition"))
+open.symp <- with(powopen.long[is.na(powopen.long$emofac)==FALSE,], prop.plot(sympathetic, emofac, powfac, ylab='Sympathy', xlab="Target's Emotion", leglab="Power Condition"))
+
+## Plot means
+source('../../R functions/mean-plot.R')
+close.angry <- with(powclose[is.na(powclose$emofac)==FALSE,], mean.plot((angry-1+mad-1)/2, emofac, powfac, ylab='Anger', ylim=c(0,4)))
+close.sad <- with(powclose[is.na(powclose$emofac)==FALSE,], mean.plot((sad-1+down-1)/2, emofac, powfac, ylab='Sadness', ylim=c(0,4)))
+close.symp <- with(powclose[is.na(powclose$emofac)==FALSE,], mean.plot((symp-1+compass-1)/2, emofac, powfac, ylab='Sympathy', ylim=c(0,4)))
+@
+
+\begin{figure}
+<<ThesisOpenSad, echo=FALSE, fig=TRUE>>=
+open.sad
+m.sad <- glm(sad ~ emocond*powcond, data=powopen.long, family=binomial(link='logit'))
+round(coefficients(summary(m.sad)),digits=2)
+@
+\caption{Open-Ended Sadness in Thesis Study}
+\end{figure}
+\newpage
+\begin{figure}
+<<ThesisOpenAngry, echo=FALSE, fig=TRUE>>=
+open.angry
+m.angry <- glm(angry ~ emocond*powcond, family=binomial(link='logit'), data=powopen.long)
+round(coefficients(summary(m.angry)),digits=2)
+@
+\caption{Open-ended Anger in Thesis Study}
+\end{figure}
+\newpage
+\begin{figure}
+<<ThesisOpenSymp, echo=FALSE, fig=TRUE>>=
+open.symp
+m.symp <- glm(sympathetic ~ emocond*powcond, family=binomial(link='logit'), data=powopen.long)
+round(coefficients(summary(m.symp)),digits=2)
+@
+\caption{Open-Ended Sympathy in Thesis Study}
+\end{figure}
+
+\subsection{Closed-Ended Emotions}
+\newpage
+\begin{figure}
+<<ThesisCloseSad, echo=FALSE, fig=TRUE>>=
+close.sad
+m.sad.close <- lm((sad-1+down-1)/2 ~  emocond*powcond, data=powclose)
+round(confint(m.sad.close, nsim=600), digits=2)
+@
+\caption{Closed-Ended Sadness in Thesis Study}
+\end{figure}
+\newpage
+\begin{figure}
+<<ThesisCloseAngry, echo=FALSE, fig=TRUE>>=
+close.angry
+m.angry.close <- lm((angry-1+mad-1)/2 ~ emocond*powcond, data=powclose)
+round(confint(m.angry.close), digits=2)
+@
+\caption{Closed-Ended Anger in Thesis Study}
+\end{figure}
+\newpage
+\begin{figure}
+<<ThesisCloseSymp, echo=FALSE, fig=TRUE>>=
+close.symp
+m.symp.close <- lm((symp-1+compass-1)/2 ~ emocond*powcond, data=powclose)
+round(confint(m.symp.close), digits=2)
+@
+\caption{Closed-Ended Sympathy in Thesis Study}
+\end{figure}
+
+\subsection{Appraisals}
+\newpage
+\begin{figure}
+<<ThesisPleas, echo=FALSE, fig=TRUE>>=
+with(powclose[is.na(powclose$emofac)==FALSE,], mean.plot(pleas-1, emofac, powfac, ylab='Pleasantness', ylim=c(0,4)))
+m.pleas <- lm(pleas-1 ~ emocond*powcond, data=powclose)
+round(confint(m.pleas), digits=2)
+@
+\caption{Pleasantness in Thesis Study}
+\end{figure}
+\newpage
+\begin{figure}
+<<ThesisImmoral, echo=FALSE, fig=TRUE>>=
+with(powclose[is.na(powclose$emofac)==FALSE,], mean.plot(immoral-1, emofac, powfac, ylab='Immorality', ylim=c(0,4)))
+m.immoral <- lm(immoral-1 ~ emocond*powcond, data=powclose)
+round(confint(m.immoral), digits=2)
+@
+\caption{Immorality in Thesis Study}
+\end{figure}
+\newpage
+\begin{figure}
+<<ThesisTargCont, echo=FALSE, fig=TRUE>>=
+with(powclose[is.na(powclose$emofac)==FALSE,], mean.plot((targag-1+targpow-1)/2, emofac, powfac, ylab='Target Control', ylim=c(0,4)))
+m.targag <- lm((targag-1+targpow-1)/2 ~ emocond*powcond, data=powclose)
+round(confint(m.targag), digits=2)
+@
+\caption{Target Agency in Thesis Study}
+\end{figure}
+\newpage
+\begin{figure}
+<<ThesisOthCont, echo=FALSE, fig=TRUE>>=
+with(powclose[is.na(powclose$emofac)==FALSE,], mean.plot((othag-1+othpow-1)/2, emofac, powfac, ylab='Other Agency', ylim=c(0,4)))
+m.othag <- lm((othag-1+othpow-1)/2 ~ emocond*powcond, data=powclose)
+round(confint(m.othag), digits=2)
+@
+\caption{Other Agency in Thesis Study}
+\end{figure}
+\newpage
+\begin{figure}
+<<ThesisSitAg, echo=FALSE, fig=TRUE>>=
+with(powclose[is.na(powclose$emofac)==FALSE,], mean.plot(selfcirc-1, emofac, powfac, ylab='Situational Agency', ylim=c(0,4)))
+m.selfcirc <- lm(selfcirc-1 ~ emocond*powcond, data=powclose)
+round(confint(m.selfcirc), digits=2)
+@
+\caption{Situational Agency in Thesis Study}
+\end{figure}
+\newpage
+\begin{figure}
+<<ThesisSitPow, echo=FALSE, fig=TRUE>>=
+with(powclose[is.na(powclose$emofac)==FALSE,], mean.plot((sitcont-1+noonepow-1)/2, emofac, powfac, ylab='Situational Control', ylim=c(0,4)))
+m.sitcont <- lm((sitcont-1+noonepow-1)/2 ~ emocond*powcond, data=powclose)
+round(confint(m.sitcont), digits=2)
+summary(lm((sad-1+down-1)/2 ~ emocond*powcond, data=powclose))
+powclose$sitpow <- rowMeans(cbind(powclose$sitcont,powclose$noonepow), na.rm=TRUE)
+@
+\caption{Situational Control in Thesis Study}
+\end{figure}
+
+\section{MTurk Study 1}
+<<PowTurkData, echo=FALSE>>=
+load('../powturk.RData')
+
+@
+
+\end{document}

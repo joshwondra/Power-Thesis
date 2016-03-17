@@ -66,7 +66,7 @@
 # selfcirc.hp: How much do you feel that circumstances beyond anyone's control are responsible for what happened?
 # targpow.hp: How much do you feel that the person who wrote the e-mail had the power to do something about the situation?
 # othpow.hp: How much do you feel that someone aside from the person who wrote the e-mail had the power to do something about the situation?
-# noonepow.hp: How much do you feel that no one had the hpower to do anything about the situation?
+# noonepow.hp: How much do you feel that no one had the power to do anything about the situation?
 # sitcont.hp: How much do you feel that the situation was out of anyone's control?
 # immoral.hp: To what extent do you feel what happened was morally wrong?
 # comm.hp: How much do you feel like lack of communication played a role in the situation?
@@ -115,6 +115,8 @@ source('../R functions/mean-plot.R')
 source('../R functions/nojitterbox.R')
 source('../R functions/multiplot.R')
 source('../R functions/proportion-plot.R')
+
+library(lme4)
 
 
 ## exclusions
@@ -190,9 +192,44 @@ with(powopen.plots, prop.plot(challenge, emot.cond, pow.cond, ylab='Challenge'))
 with(powopen.plots, prop.plot(interest, emot.cond, pow.cond, ylab='Interested'))
 with(powopen.plots, prop.plot(confused, emot.cond, pow.cond, ylab='Confused'))
 
+powopen.concise <- powopen[,c('dyadID.hp','subjectID.hp','pt_cond.hp','emot_cond.hp','exper.hp','ssc.hp','age.hp','female.hp','black.hp','asian.hp','latino.hp','white.hp','other.hp','other_secify.hp','mideast.hp','natam.hp','pacisl.hp','mom_ed.hp','dad_ed.hp','o_sad.hp','o_angry.hp','o_sympathy.hp','dyadID.lp','subjectID.lp','pt_cond.lp','emot_cond.lp','exper.lp','ssc.lp','age.lp','female.lp','black.lp','asian.lp','latino.lp','white.lp','other.lp','other_secify.lp','mideast.lp','natam.lp','pacisl.lp','mom_ed.lp','dad_ed.lp','o_sad.lp','o_angry.lp','o_sympathy.lp')]
+
+powopen.hp <- powopen.concise[,c(1:22)]
+colnames(powopen.hp) <- c('DyadID','SubjectID','powcond','emocond','exper','ssc','age','female','black','asian','latino','white','other','other_specify','mideast','natam','pacisl','mom_ed','dad_ed','sad','angry','sympathetic')
+powopen.lp <- powopen.concise[,c(23:44)]
+colnames(powopen.lp) <- c('DyadID','SubjectID','powcond','emocond','exper','ssc','age','female','black','asian','latino','white','other','other_specify','mideast','natam','pacisl','mom_ed','dad_ed','sad','angry','sympathetic')
+powopen.long <- rbind(powopen.hp,powopen.lp)
+rownames(powopen.long) <- 1:198
+
+powopen.long$powfac <- with(powopen.long, factor(powcond, levels=c(1,2), labels=c('high power','low power')))
+powopen.long$emofac <- with(powopen.long, factor(emocond, levels=c(1,2), labels=c('sad','angry')))
+save(powopen.long, file='powopenlong.RData')
+
+with(powopen.long, by(sad,list(powfac, emofac),sum))
+with(powopen.long, by(angry,list(powfac, emofac),sum))
+with(powopen.long, by(sympathetic,list(powfac, emofac),sum))
+with(powopen.long, table(powfac,emofac))
+
+powopen.long$femcent <- powopen.long$female - mean(powopen.long$female, na.rm=TRUE)
+
+m.osad <- glmer(sad ~ (1|DyadID) + emofac*powfac + femcent, data=powopen.long, family=binomial, control=glmerControl(optimizer='bobyqa'), nAGQ=10)
+summary(m.osad)
 
 
 ## Closed-Ended Data
+
+## Create long form for MLM
+pow.hp <- pow[,c('dyadID','emot_cond','exper','subjectID.hp','symp.hp','angry.hp','compass.hp','mad.hp','down.hp','sad.hp','powerful.hp','pleas.hp','targag.hp','othag.hp','selfcirc.hp','targpow.hp','othpow.hp','noonepow.hp','sitcont.hp','immoral.hp','comm.hp','ssc.hp','age.hp','female.hp','black.hp','asian.hp','latino.hp','white.hp','other.hp','other_secify.hp','mideast.hp','natam.hp','pacisl.hp','mom_ed.hp','dad_ed.hp')]
+pow.hp$powcond <- rep(1, length(pow.hp$dyadID))
+colnames(pow.hp) <- c('dyadID', 'emocond', 'exper','SubjectID','symp','angry','compass','mad','down','sad','powerful','pleas','targag','othag','selfcirc','targpow','othpow','noonepow','sitcont','immoral','comm','ssc','age','female','black','asian','latino','white','other','other_specify','mideast','natam','pacisl','mom_ed','dad_ed','powcond')
+pow.lp <- pow[,c('dyadID','emot_cond','exper','subjectID.lp','symp.lp','angry.lp','compass.lp','mad.lp','down.lp','sad.lp','powerful.lp','pleas.lp','targag.lp','othag.lp','selfcirc.lp','targpow.lp','othpow.lp','noonepow.lp','sitcont.lp','immoral.lp','comm.lp','ssc.lp','age.lp','female.lp','black.lp','asian.lp','latino.lp','white.lp','other.lp','other_secify.lp','mideast.lp','natam.lp','pacisl.lp','mom_ed.lp','dad_ed.lp')]
+pow.lp$powcond <- rep(-1, length(pow.lp$dyadID))
+colnames(pow.lp) <- c('dyadID', 'emocond', 'exper','SubjectID','symp','angry','compass','mad','down','sad','powerful','pleas','targag','othag','selfcirc','targpow','othpow','noonepow','sitcont','immoral','comm','ssc','age','female','black','asian','latino','white','other','other_specify','mideast','natam','pacisl','mom_ed','dad_ed','powcond')
+
+powclose <- rbind(pow.hp,pow.lp)
+powclose$emofac <- factor(powclose$emocond, levels=c(1,2), labels=c('sad','angry'))
+powclose$powfac <- factor(powclose$powcond, levels=c(-1,1), labels=c('low power','high power'))
+save(powclose, file='powcloselong.RData')
 
 round(cor(pow[,9:22], use='complete.obs'), digits=2)
 round(cor(pow[,99:112], use='complete.obs'), digits=2)
@@ -249,14 +286,40 @@ ggplot(data=pow, aes(y=mad.hp-mad.lp, x=factor(emot_cond))) + geom_boxplot()
 ggplot(data=pow, aes(y=sad.hp-sad.lp, x=factor(emot_cond))) + geom_boxplot()
 ggplot(data=pow, aes(y=down.hp-down.lp, x=factor(emot_cond))) + geom_boxplot()
 
-
+with(pow, plot(jitter(angermean.hp), jitter(othag.hp)))
+pow$othagmean.hp <- pow$othag.hp-mean(pow$othag.hp, na.rm=TRUE)
+pow$othagsq <- pow$othagmean.hp^2
+pow$othagcu <- pow$othagmean.hp^3
+fit1 <- lm(angermean.hp ~ othagmean.hp, data=pow)
+summary(fit1)
+qqnorm(residuals(fit1));qqline(residuals(fit1))
+fit2 <- lm(angermean.hp ~ othagmean.hp+othagsq+othagcu, data=pow)
+summary(fit2)
+qqnorm(residuals(fit2));qqline(residuals(fit2))
+fit3 <- lm(angermean.hp ~ othagcu, data=pow)
+summary(fit3)
+qqnorm(residuals(fit3));qqline(residuals(fit3))
 
 
 
 ##### 4. Own Appraisals #####
+library(psych)
+set.seed(81715)
+fa.parallel(powclose[,c('pleas','immoral','comm','targag','targpow','othag','othpow','selfcirc','noonepow','sitcont')], n.iter=10000)
+fa(powclose[,c('pleas','immoral','comm','targag','targpow','othag','othpow','selfcirc','noonepow','sitcont')], nfactors=4, rotate='promax', fm='ml') #also tested 3 and 2 factors; in general, pleasantness doesn't load on anything (probably due to restricted range); immorality and communication go with the other-agency appraisals; other agency and other power load together; target agency and target power load together; no one power and situational control load together; situational agency loads more with other-agency and power than with situational control/no one power
 
+names(powclose)
+ap.cor.data <- with(powclose, data.frame(emofac, powfac, pleas=jitter(pleas), immoral=jitter(immoral), comm=jitter(comm), targag=jitter(targag), targpow=jitter(targpow), othag=jitter(othag), othpow=jitter(othpow), noonepow=jitter(noonepow), sitag=jitter(selfcirc), sitcont=jitter(sitcont)))
+ggpairs(data=ap.cor.data, c(3:5), color='emofac', shape='powfac')
+ggpairs(data=ap.cor.data, c(6:12), color='emofac', shape='powfac')
+
+
+library(GGally)
+ggpairs(data=powclose, c(12:14), color='emofac', shape='powfac', lower=list(continuous='points'))
 round(cor(pow[,49:58], use='complete.obs'), digits=2)
 round(cor(pow[,59:68], use='complete.obs'), digits=2)
+
+round(cor(powclose[,12:21], use='complete.obs'), digits=2)
 
 pow$blamevic.hp <- rowMeans(pow[,c('targag.hp','targpow.hp')])
 pow$blameoth.hp <- rowMeans(pow[,c('othag.hp','othpow.hp')])

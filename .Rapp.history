@@ -1,0 +1,3 @@
+load("/Users/joshwondra/Power Thesis/powcloselong.RData")
+load("/Users/joshwondra/Power Thesis/powopenlong.RData")
+load("/Users/joshwondra/Power Thesis/powturk.RData")

@@ -1,0 +1,222 @@
+\documentclass[man,apacite,floatsintext]{apa6}
+\usepackage{apacite}
+\usepackage{float}
+\title{Results of Power Experiments}
+\shorttitle{Power and Empathy}
+\author{Joshua D. Wondra and Phoebe C. Ellsworth}
+\affiliation{University of Michigan}
+
+\abstract{Abstract TBD}
+\keywords{empathy, vicarious emotions, power}
+
+\authornote{Joshua D. Wondra, Department of Psychology, University of Michigan.
+
+Phoebe C. Ellsworth, Department of Psychology, University of Michigan.
+
+Correspondence concerning this article should be addressed to Josh Wondra, Department of Psychology, University of Michigan, 530 Church St., Ann Arbor, MI 48109-1043.
+
+Contact: jdwondra@umich.edu}
+
+\usepackage{Sweave}
+\begin{document}
+\input{PowerResults-concordance}
+\maketitle
+
+\section{Thesis Study}
+\subsection{Open-Ended Emotions}
+
+\begin{figure}
+\begin{Schunk}
+\begin{Soutput}
+                Estimate Std. Error z value Pr(>|z|)
+(Intercept)        -1.07       0.18   -6.05     0.00
+emocond            -0.47       0.18   -2.66     0.01
+powcond             0.11       0.18    0.63     0.53
+emocond:powcond     0.27       0.18    1.53     0.13
+\end{Soutput}
+\end{Schunk}
+\includegraphics{PowerResults-ThesisOpenSad}
+\caption{Open-Ended Sadness in Thesis Study}
+\end{figure}
+\newpage
+\begin{figure}
+\begin{Schunk}
+\begin{Soutput}
+                Estimate Std. Error z value Pr(>|z|)
+(Intercept)        -1.77       0.25   -7.07     0.00
+emocond             0.97       0.25    3.86     0.00
+powcond             0.31       0.25    1.25     0.21
+emocond:powcond    -0.04       0.25   -0.18     0.86
+\end{Soutput}
+\end{Schunk}
+\includegraphics{PowerResults-ThesisOpenAngry}
+\caption{Open-ended Anger in Thesis Study}
+\end{figure}
+\newpage
+\begin{figure}
+\begin{Schunk}
+\begin{Soutput}
+                Estimate Std. Error z value Pr(>|z|)
+(Intercept)         0.84       0.17    4.87     0.00
+emocond            -0.74       0.17   -4.25     0.00
+powcond            -0.17       0.17   -0.96     0.34
+emocond:powcond    -0.03       0.17   -0.16     0.87
+\end{Soutput}
+\end{Schunk}
+\includegraphics{PowerResults-ThesisOpenSymp}
+\caption{Open-Ended Sympathy in Thesis Study}
+\end{figure}
+
+\subsection{Closed-Ended Emotions}
+\newpage
+\begin{figure}
+\begin{Schunk}
+\begin{Soutput}
+                2.5 % 97.5 %
+(Intercept)      1.76   2.68
+emocond         -0.92  -0.34
+powcond         -0.71   0.21
+emocond:powcond -0.25   0.33
+\end{Soutput}
+\end{Schunk}
+\includegraphics{PowerResults-ThesisCloseSad}
+\caption{Closed-Ended Sadness in Thesis Study}
+\end{figure}
+\newpage
+\begin{figure}
+\begin{Schunk}
+\begin{Soutput}
+                2.5 % 97.5 %
+(Intercept)     -0.65   0.26
+emocond          0.59   1.17
+powcond         -0.56   0.35
+emocond:powcond -0.27   0.30
+\end{Soutput}
+\end{Schunk}
+\includegraphics{PowerResults-ThesisCloseAngry}
+\caption{Closed-Ended Anger in Thesis Study}
+\end{figure}
+\newpage
+\begin{figure}
+\begin{Schunk}
+\begin{Soutput}
+                2.5 % 97.5 %
+(Intercept)      3.09   3.97
+emocond         -1.02  -0.46
+powcond         -0.24   0.63
+emocond:powcond -0.40   0.15
+\end{Soutput}
+\end{Schunk}
+\includegraphics{PowerResults-ThesisCloseSymp}
+\caption{Closed-Ended Sympathy in Thesis Study}
+\end{figure}
+
+\subsection{Appraisals}
+\newpage
+\begin{figure}
+\begin{Schunk}
+\begin{Soutput}
+                2.5 % 97.5 %
+(Intercept)     -0.08   0.25
+emocond         -0.10   0.12
+powcond         -0.10   0.24
+emocond:powcond -0.16   0.05
+\end{Soutput}
+\end{Schunk}
+\includegraphics{PowerResults-ThesisPleas}
+\caption{Pleasantness in Thesis Study}
+\end{figure}
+\newpage
+\begin{figure}
+\begin{Schunk}
+\begin{Soutput}
+                2.5 % 97.5 %
+(Intercept)     -2.45  -1.64
+emocond          2.20   2.71
+powcond         -0.30   0.51
+emocond:powcond -0.31   0.20
+\end{Soutput}
+\end{Schunk}
+\includegraphics{PowerResults-ThesisImmoral}
+\caption{Immorality in Thesis Study}
+\end{figure}
+\newpage
+\begin{figure}
+\begin{Schunk}
+\begin{Soutput}
+                2.5 % 97.5 %
+(Intercept)      0.78   1.51
+emocond         -0.12   0.35
+powcond         -0.02   0.71
+emocond:powcond -0.41   0.05
+\end{Soutput}
+\end{Schunk}
+\includegraphics{PowerResults-ThesisTargCont}
+\caption{Target Agency in Thesis Study}
+\end{figure}
+\newpage
+\begin{figure}
+\begin{Schunk}
+\begin{Soutput}
+                2.5 % 97.5 %
+(Intercept)     -2.16  -1.46
+emocond          1.99   2.43
+powcond         -0.20   0.49
+emocond:powcond -0.31   0.13
+\end{Soutput}
+\end{Schunk}
+\includegraphics{PowerResults-ThesisOthCont}
+\caption{Other Agency in Thesis Study}
+\end{figure}
+\newpage
+\begin{figure}
+\begin{Schunk}
+\begin{Soutput}
+                2.5 % 97.5 %
+(Intercept)      3.73   4.71
+emocond         -1.81  -1.19
+powcond         -0.73   0.25
+emocond:powcond -0.18   0.44
+\end{Soutput}
+\end{Schunk}
+\includegraphics{PowerResults-ThesisSitAg}
+\caption{Situational Agency in Thesis Study}
+\end{figure}
+\newpage
+\begin{figure}
+\begin{Schunk}
+\begin{Soutput}
+                2.5 % 97.5 %
+(Intercept)      2.88   3.81
+emocond         -1.65  -1.06
+powcond         -0.84   0.09
+emocond:powcond -0.16   0.43
+\end{Soutput}
+\begin{Soutput}
+Call:
+lm(formula = (sad - 1 + down - 1)/2 ~ emocond * powcond, data = powclose)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-1.7935 -0.8044 -0.2935  0.6956  2.6957 
+
+Coefficients:
+                Estimate Std. Error t value Pr(>|t|)    
+(Intercept)      2.22041    0.23289   9.534  < 2e-16 ***
+emocond         -0.62923    0.14705  -4.279 3.05e-05 ***
+powcond         -0.24698    0.23289  -1.061    0.290    
+emocond:powcond  0.04469    0.14705   0.304    0.762    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.9946 on 179 degrees of freedom
+  (15 observations deleted due to missingness)
+Multiple R-squared:  0.1205,	Adjusted R-squared:  0.1057 
+F-statistic: 8.172 on 3 and 179 DF,  p-value: 3.963e-05
+\end{Soutput}
+\end{Schunk}
+\includegraphics{PowerResults-ThesisSitPow}
+\caption{Situational Control in Thesis Study}
+\end{figure}
+
+\end{document}

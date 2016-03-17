@@ -79,7 +79,7 @@ table(powturk$powfac, powturk$emofac)
 
 powturk$group <- with(powturk, ifelse(powcond==-1 & emocond==-1, 1, ifelse(powcond==-1 & emocond==1, 2, ifelse(powcond==1 & emocond==-1, 3, ifelse(powcond==1 & emocond==1, 4, NA))))) # 1 = low power/sad, 2 = low power/angry, 3 = high power/sad, 4 = high power/angry
 
-
+save(powturk, file='powturk.RData')
 
 
 
@@ -95,6 +95,9 @@ with(powturk[powturk$female!='transman' & powturk$emocond==1,], round(cor(cbind(
 
 # Examine correlations among emotions
 round(cor(powturk[14:25], use='complete.obs'), digits=2)
+library(psych)
+fa.parallel(powturk[14:25],n.iter=500)
+fa(powturk[14:25],nfactors=4,rotate='promax',fm='mle')
 
 ## Center condition
 powturk$powcond.cent <- powturk$powcond-mean(powturk$powcond, na.rm=TRUE)
@@ -109,10 +112,14 @@ with(powturk, t.contrast(sad, group, c(1,0,-1,0)))
 qplot(y=down, x=emofac, fill=powfac, data=powturk, geom='boxplot')
 with(powturk, mean.plot(down, f1=emofac, f2=powfac, ylab='Sadness', ylim=c(0,100)))
 
-qplot(y=(sad+down)/2, x=emofac, fill=powfac, data=powturk, geom='boxplot')
+qplot(y=worried, x=emofac, fill=powfac, data=powturk, geom='boxplot')
+qplot(y=anxious, x=emofac, fill=powfac, data=powturk, geom='boxplot')
+
+
+qplot(y=(sad+down+worried+anxious)/4, x=emofac, fill=powfac, data=powturk, geom='boxplot')
 with(powturk, mean.plot((sad))
 
-summary(lm((sad+down)/2 ~ powcond*emocond, data=powturk))
+summary(lm((sad+down+worried+anxious)/4 ~ powcond*emocond, data=powturk))
 
 # low pow/sad, low pow/angry, high pow/sad, high pow/angry
 with(powturk, t.contrast((sad)/2, group, c(1,0,-1,0)))
@@ -123,29 +130,64 @@ with(powturk, t.contrast((sad+down)/2, group, c(1,0,-1,0)))
 with(powturk, t.contrast((sad+down)/2, group, c(0,1,0,-1)))
 with(powturk, t.contrast((sad+down)/2, group, c(1,1,-1,-1)))
 
-qplot(y=angry, x=emofac, fill=powfac, data=pow, geom='boxplot')
-qplot(y=mad, x=emofac, fill=powfac, data=pow, geom='boxplot')
-qplot(y=(angry+mad)/2, x=emofac, fill=powfac, data=pow, geom='boxplot')
+qplot(y=angry, x=emofac, fill=powfac, data=powturk, geom='boxplot')
+qplot(y=mad, x=emofac, fill=powfac, data=powturk, geom='boxplot')
+qplot(y=(angry+mad)/2, x=emofac, fill=powfac, data=powturk, geom='boxplot')
 
-with(pow, t.contrast((angry+mad)/2, group, c(1,0,-1,0)))
-with(pow, t.contrast((angry+mad)/2, group, c(0,1,0,-1)))
-with(pow, t.contrast((angry+mad)/2, group, c(-1,-1,1,1)))
-with(pow, t.contrast((angry+mad)/2, group, c(0,0,-1,1)))
+with(powturk, t.contrast((angry+mad)/2, group, c(1,0,-1,0)))
+with(powturk, t.contrast((angry+mad)/2, group, c(0,1,0,-1)))
+with(powturk, t.contrast((angry+mad)/2, group, c(-1,-1,1,1)))
+with(powturk, t.contrast((angry+mad)/2, group, c(0,0,-1,1)))
 
-qplot(y=symp, x=emofac, fill=powfac, data=pow, geom='boxplot')
-qplot(y=comp, x=emofac, fill=powfac, data=pow, geom='boxplot')
-qplot(y=(symp+comp)/2, x=emofac, fill=powfac, data=pow, geom='boxplot')
+qplot(y=symp, x=emofac, fill=powfac, data=powturk, geom='boxplot')
+qplot(y=comp, x=emofac, fill=powfac, data=powturk, geom='boxplot')
+qplot(y=(symp+comp)/2, x=emofac, fill=powfac, data=powturk, geom='boxplot')
 
-with(pow, t.contrast((symp+comp)/2, group, c(1,0,-1,0)))
-with(pow, t.contrast((symp+comp)/2, group, c(0,1,0,-1)))
-with(pow, t.contrast((symp+comp)/2, group, c(-1,-1,1,1)))
+with(powturk, t.contrast((symp+comp)/2, group, c(1,0,-1,0)))
+with(powturk, t.contrast((symp+comp)/2, group, c(0,1,0,-1)))
+with(powturk, t.contrast((symp+comp)/2, group, c(-1,-1,1,1)))
 
-qplot(y=pleas, x=emofac, fill=powfac, data=pow, geom='boxplot')
-qplot(y=tresp, x=emofac, fill=powfac, data=pow, geom='boxplot')
-qplot(y=oresp, x=emofac, fill=powfac, data=pow, geom='boxplot')
-qplot(y=sresp, x=emofac, fill=powfac, data=pow, geom='boxplot')
-qplot(y=tpow, x=emofac, fill=powfac, data=pow, geom='boxplot')
-qplot(y=opow, x=emofac, fill=powfac, data=pow, geom='boxplot')
-qplot(y=noonepow, x=emofac, fill=powfac, data=pow, geom='boxplot')
-qplot(y=sitpow, x=emofac, fill=powfac, data=pow, geom='boxplot')
-qplot(y=immoral, x=emofac, fill=powfac, data=pow, geom='boxplot')
+qplot(y=pleas, x=emofac, fill=powfac, data=powturk, geom='boxplot')
+qplot(y=tresp, x=emofac, fill=powfac, data=powturk, geom='boxplot')
+qplot(y=oresp, x=emofac, fill=powfac, data=powturk, geom='boxplot')
+qplot(y=sresp, x=emofac, fill=powfac, data=powturk, geom='boxplot')
+qplot(y=tpow, x=emofac, fill=powfac, data=powturk, geom='boxplot')
+qplot(y=opow, x=emofac, fill=powfac, data=powturk, geom='boxplot')
+qplot(y=noonepow, x=emofac, fill=powfac, data=powturk, geom='boxplot')
+qplot(y=sitpow, x=emofac, fill=powfac, data=powturk, geom='boxplot')
+qplot(y=immoral, x=emofac, fill=powfac, data=powturk, geom='boxplot')
+
+
+with(powturk, mean.plot(down, emofac, powfac, ylab='sad'))
+library(GGally)
+
+test <- powturk
+test[test$sad==0,'sad'] <- NA
+test[test$down==0,'down'] <- NA
+test[test$worried==0,'worried'] <- NA
+test[test$anxious==0,'anxious'] <- NA
+test[test$symp==0,'symp'] <- NA
+test[test$comp==0,'comp'] <- NA
+
+
+# Analyze sadness
+qplot(y=sad, x=emofac, fill=powfac, data=test, geom='boxplot')
+with(test, mean.plot(sad, f1=emofac, f2=powfac, ylab='Sadness', ylim=c(0,100)))
+summary(lm(sad ~ powcond*emocond, data=test))
+with(test[is.na(test$sad)==FALSE,], t.contrast(sad, group, c(1,0,-1,0)))
+
+qplot(y=down, x=emofac, fill=powfac, data=test, geom='boxplot')
+with(test, mean.plot(down, f1=emofac, f2=powfac, ylab='Sadness', ylim=c(0,100)))
+
+qplot(y=worried, x=emofac, fill=powfac, data=test, geom='boxplot')
+qplot(y=anxious, x=emofac, fill=powfac, data=test, geom='boxplot')
+
+
+qplot(y=(sad+down+worried+anxious)/4, x=emofac, fill=powfac, data=test, geom='boxplot')
+with(test, mean.plot((sad+down+worried+anxious)/4, emofac,powfac,ylim=c(0,100)))
+     
+summary(lm((sad+down+worried+anxious)/4 ~ powcond*emocond, data=test))
+
+qplot(y=symp, x=emofac, fill=powfac, data=test, geom='boxplot')
+qplot(y=comp, x=emofac, fill=powfac, data=test, geom='boxplot')
+summary(lm((symp+comp)/2 ~ powcond*emocond, data=test))
